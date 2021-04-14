@@ -29,7 +29,10 @@ input[type=text],input[type=email],input[type=number],input[type=password]{
 <body>
 	<div class="flexBox">
 		<h1>Signup</h1>
-		<form action="Signup" method="post">
+		<div id="msg">
+			
+		</div>
+		<form action="Signup" method="post" id="myform">
 			<div>
 				<label>Enter a Username</label>
 				<input type="text" name="username"/>
@@ -58,6 +61,45 @@ input[type=text],input[type=email],input[type=number],input[type=password]{
 	<script src="Jquery.js"></script>
 	<script type="text/javascript">
 		console.log($(".loader").html());
+		
+		$(document).ready(function(){
+			console.log("Page is Ready");
+			$('#myform').on('submit',function(e){
+				e.preventDefault();
+				let f=$(this).serialize();
+				//console.log($(this));
+				
+				$(".loader").show();
+				$('#myform').hide();
+				
+				$.ajax({
+						url:'Signup',
+						data:f,
+						type:"POST",
+						success:(data,status,jqXHR)=>{
+							console.log(data);
+							console.log("success");
+							$(".loader").hide();
+							$('#myform').show();
+							
+							if (data.trim() === "success") {
+								$("#msg").html("Successfully Registered")
+							} else {
+								$("#msg").html("Something went wrong on server");
+							}
+							
+						},
+						error:(err)=>{
+							console.log(err);	
+							console.log("error");
+							$(".loader").hide();
+							$('#myform').show();
+							$("#msg").html("Something went wrong on server");
+						}
+					});
+				
+			})
+		});
 	</script>
 </body>
 </html>

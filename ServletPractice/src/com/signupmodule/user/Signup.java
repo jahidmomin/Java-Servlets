@@ -21,7 +21,7 @@ public class Signup extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     Connection con=null;
     PreparedStatement pst=null;
-	protected void processReq(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+	protected void processReq(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException, InterruptedException {
 		String name,email,mobno,pass;
 		name=request.getParameter("username");
 		email=request.getParameter("email");
@@ -30,24 +30,29 @@ public class Signup extends HttpServlet {
 		
 		PrintWriter out=response.getWriter();
 //		out.print(name+" "+email+" "+mobno+" "+pass);
-		
+		if (name!="" && email!="" && mobno!="" && pass!="") {
+			Thread.sleep(3000);
+			out.print("failure");
+		}else {
 //		connection
 		try {
+			Thread.sleep(3000);
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:ORCL", "scott", "tiger");
 
 			if (con != null) {
 				System.out.println("Connected to Oracle Server");
 				pst=con.prepareStatement("INSERT INTO signup values(?,?,?,?)");
+				
 				pst.setString(1,name);
 				pst.setString(2,email);
 				pst.setString(3,mobno);
 				pst.setString(4,pass);
 				
 				if (pst.executeUpdate()!=0) {
-					out.print("<h1>Successfully Done</h1>");
+					out.print("success");
 				} else {
-					out.print("<h1>Failes to register</h1>");
+					out.print("failure");
 				}
 				
 			}
@@ -55,7 +60,7 @@ public class Signup extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+		}
 		
 	}
 
@@ -64,6 +69,9 @@ public class Signup extends HttpServlet {
 		try {
 			processReq(request, response);
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
