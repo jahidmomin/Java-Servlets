@@ -50,6 +50,10 @@ input[type=text],input[type=email],input[type=number],input[type=password]{
 				<input type="password" name="pass"/>
 			</div>
 			<div>
+				<label>Upload Profle Pic</label>
+				<input type="file" name="profile"/>
+			</div>
+			<div>
 				<input type="submit" name="submit"/>
 			</div>	
 		</form>
@@ -66,8 +70,13 @@ input[type=text],input[type=email],input[type=number],input[type=password]{
 			console.log("Page is Ready");
 			$('#myform').on('submit',function(e){
 				e.preventDefault();
-				let f=$(this).serialize();
+				
+				//if image then change FormData() object
+				//let f=$(this).serialize();
 				//console.log($(this));
+				
+				let f=new FormData(this);
+				console.log(f);
 				
 				$(".loader").show();
 				$('#myform').hide();
@@ -76,7 +85,7 @@ input[type=text],input[type=email],input[type=number],input[type=password]{
 						url:'Signup',
 						data:f,
 						type:"POST",
-						success:(data,status,jqXHR)=>{
+						success:function(data,status,jqXHR){
 							console.log(data);
 							console.log("success");
 							$(".loader").hide();
@@ -89,13 +98,15 @@ input[type=text],input[type=email],input[type=number],input[type=password]{
 							}
 							
 						},
-						error:(err)=>{
+						error:function(err){
 							console.log(err);	
 							console.log("error");
 							$(".loader").hide();
 							$('#myform').show();
 							$("#msg").html("Something went wrong on server");
-						}
+						},
+						processData:false,
+						contentType:false
 					});
 				
 			})
